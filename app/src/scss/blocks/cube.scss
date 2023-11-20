@@ -1,0 +1,47 @@
+$cubeWidth: 60px;
+$cubeHeight: 60px;
+
+.cube {
+    width: $cubeWidth;
+    height: $cubeHeight;
+    border-radius: calc($cubeWidth / 5);
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    padding-left: 3px;
+    padding-top: 6px;
+    padding-right: 3px;
+    padding-bottom: 6px;
+    box-shadow: inset 0 0 calc($cubeWidth / 12) rgba(0, 0, 0, 0.5);
+}
+
+.cube--match {
+    border-color: rgba(255, 0, 0, 0.3);
+}
+
+.cube__dot {
+    min-width: calc($cubeWidth / 6);
+    width: calc($cubeWidth / 6);
+    height: calc($cubeWidth / 6);
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 calc($cubeWidth / 12) rgba(0, 0, 0, 0.5);
+}
+
+.cube--red {
+    border-color: rgba(255, 0, 0, 0.5);
+    box-shadow: inset 0 0 calc($cubeWidth / 12) rgba(255, 0, 0, 0.5);
+}
+
+.cube--red .cube__dot {
+    background-color: rgba(255, 0, 0, 0.8);
+    box-shadow: 0 0 calc($cubeWidth / 12) rgba(255, 0, 0, 0.5);
+}
+
+.cube--green {
+    border-color: rgba(0, 255, 0, 0.5);
+    box-shadow: inset 0 0 calc($cubeWidth / 12) rgba(0, 255, 0, 0.5);
+}
+
+.cube--green .cube__dot {
+    background-color: rgba(0, 255, 0, 0.8);
+    box-shadow: 0 0 calc($cubeWidth / 12) rgba(0, 255, 0, 0.5);
+}

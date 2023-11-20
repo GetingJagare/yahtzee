@@ -1,7 +1,4 @@
-PHP-код в директории app
-
-## Commands
+## Command
 ```
-mkdir logs && touch logs/access.log && touch logs/error.log
-make build && make run
+mkdir logs && make build && make run
 ```

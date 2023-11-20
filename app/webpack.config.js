@@ -1,0 +1,39 @@
+import { resolve } from 'path';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+
+export default function ( env ) {
+    return {
+        mode: env.MODE === 'development' ? 'development' : 'production',
+        entry: './src/ts/main.ts',
+        plugins: [
+            new MiniCssExtractPlugin( {
+                filename: '[name].css',
+            } ),
+        ],
+        module: {
+            rules: [
+                {
+                    test: /\.tsx?$/,
+                    use: 'ts-loader',
+                    exclude: /node_modules/,
+                },
+                {
+                    test: /\.s[ac]ss$/i,
+                    use: [
+                        MiniCssExtractPlugin.loader,
+                        "css-loader",
+                        "sass-loader",
+                    ],
+                },
+            ],
+        },
+        output: {
+            filename: 'main.js',
+            path: resolve( '.', 'dist' ),
+            clean: true,
+        },
+        resolve: {
+            extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        },
+    };
+}
