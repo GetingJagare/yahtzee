@@ -1,63 +1,45 @@
 <?php
 
-$attempt = [rand(1, 6), rand(1, 6), rand(1, 6), rand(1, 6), rand(1, 6)];
-sort($attempt);
-$combination_result = '';
-$matches = $matchKeys = [];
-$sequences = [
-    ['seq' => [[1, 2, 3, 4, 5], [2, 3, 4, 5, 6]], 'result' => 'Large Straight',],
-    ['seq' => [[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]], 'result' => 'Small Straight',],
+$digits = [rand(1, 6), rand(1, 6), rand(1, 6), rand(1, 6), rand(1, 6)];
+sort($digits);
+$digitCount = array_count_values($digits); // [digit => count]
+$digitCountValues = array_values($digitCount);
+$digitCountValuesString = implode('', $digitCountValues);
+$digitString = implode('', array_unique(array_keys($digitCount)));
+$result = '';
+$combinations = [
+    ['seq' => '12345|23456', 'result' => 'Large Straight', 'straight' => true],
+    ['seq' => '1234|2345|3456', 'result' => 'Small Straight', 'straight' => true],
+    ['seq' => '5', 'result' => 'YAHTZEE'],
+    ['seq' => '4', 'result' => '4 of a Kind'],
+    ['seq' => '23|32', 'result' => 'Full House'],
+    ['seq' => '3', 'result' => '3 of a Kind'],
+    ['seq' => '22', 'result' => 'Two Pairs'],
+    ['seq' => '2', 'result' => 'Pair'],
 ];
 
-foreach ($sequences as $seq) {
-    foreach ($seq['seq'] as $s) {
-        if (count(array_filter($s, function ($v) use ($attempt) {
-            return in_array($v, $attempt);
-        })) == count($s)) {
-            $combination_result = $seq['result'];
-            $matchKeys = array_map(function ($v) use ($attempt) {
-                return array_search($v, $attempt);
-            }, $s);
-            break 2;
+foreach ($combinations as $c) {
+    $success = (bool)preg_match(
+        "/(" . $c['seq'] . ")/",
+        $c['straight'] ? $digitString : str_replace('1', '', $digitCountValuesString),
+        $matches,
+    );
+
+    if ($success) {
+        $result = $c['result'];
+
+        if (!$c['straight']) {
+            $matches[1] = implode('', array_keys(
+                array_filter(
+                    $digitCount,
+                    fn ($v, $k) => $v > 1,
+                    ARRAY_FILTER_USE_BOTH,
+                )
+            ));
         }
+        break;
     }
 }
 
-if (empty($combination_result)) {
-    $combinations = [
-        '2' => 'Pair',
-        '2,2' => 'Two Pairs',
-        '3' => '3 of a Kind',
-        '3,2' => 'Full House',
-        '2,3' => 'Full House',
-        '4' => '4 of a Kind',
-        '5' => 'YAHTZEE'
-    ];
-    $matches = [];
-    $processedDigits = [];
-
-    foreach ($attempt as $digit) {
-        if (isset($matches[$digit]) || in_array($digit, $processedDigits)) {
-            continue;
-        }
-
-        $count = count(array_filter($attempt, function ($d) use ($digit) {
-            return $d == $digit;
-        }));
-
-        if ($count > 1) {
-            $matches[$digit] = $count;
-        }
-        $processedDigits[] = $digit;
-    }
-
-    $matchKeys = array_keys($matches);
-    $combination_result = $combinations[$matches[$matchKeys[0]] . (isset($matches[$matchKeys[1]]) ? ',' . $matches[$matchKeys[1]] : '')];
-}
-
-echo json_encode([
-    'attempt' => $attempt,
-    'matches' => $matchKeys,
-    'text' => $combination_result ?: 'Chance',
-]);
+echo json_encode(['attempt' => $digits, 'matches' => $matches[1] ?? [], 'text' => $result ?: 'Chance']);
 exit;
