@@ -1,14 +1,22 @@
 import { resolve } from 'path';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 
 export default function ( env ) {
     return {
         mode: env.MODE === 'development' ? 'development' : 'production',
         entry: './src/ts/main.ts',
+        optimization: {
+            minimize: true,
+            minimizer: [
+                new CssMinimizerPlugin(),
+            ],
+        },
         plugins: [
             new MiniCssExtractPlugin( {
                 filename: '[name].css',
             } ),
+            new MiniCssExtractPlugin(),
         ],
         module: {
             rules: [
