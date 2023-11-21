@@ -1,6 +1,7 @@
 import { resolve } from 'path';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
 
 export default function ( env ) {
     return {
@@ -10,6 +11,7 @@ export default function ( env ) {
             minimize: true,
             minimizer: [
                 new CssMinimizerPlugin(),
+                new TerserPlugin(),
             ],
         },
         plugins: [
